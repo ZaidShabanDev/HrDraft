@@ -1,0 +1,154 @@
+/* Screen 00 — Login. Layout only; every value is a token. */
+
+.login-brand {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 44px var(--space-10);
+  color: var(--color-on-dark);
+}
+
+.login-logo {
+  height: 34px;
+  width: auto;
+  align-self: flex-start;
+  flex: none;
+}
+
+.login-brand-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 460px;
+}
+
+.login-eyebrow {
+  color: var(--color-on-dark-muted);
+  font-size: var(--text-12);
+  letter-spacing: var(--tracking-hero);
+  text-transform: uppercase;
+}
+
+.login-brand-title {
+  margin: 0;
+  color: var(--color-on-dark);
+  font-size: var(--text-40);
+  line-height: 1.1;
+}
+
+.login-brand-body {
+  margin: 0;
+  color: var(--color-on-dark-body);
+  font-size: var(--text-14);
+  line-height: 1.6;
+}
+
+.login-brand-footer {
+  display: flex;
+  gap: var(--space-8);
+  padding-top: var(--space-4);
+  border-top: var(--rule-section) solid var(--color-on-dark-rule);
+  color: var(--color-on-dark-body);
+  font-size: var(--text-12);
+}
+
+.login-version {
+  margin-left: auto;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 44px var(--space-10);
+}
+
+.login-heading {
+  margin: 0;
+  font-size: var(--text-26);
+}
+
+.login-misconfigured {
+  margin: 0;
+  padding: var(--space-3);
+  border: var(--rule-section) solid var(--color-danger);
+  color: var(--color-danger);
+  font-size: var(--text-13);
+}
+
+.login-or {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.login-or-rule {
+  flex: 1;
+  height: var(--rule-section);
+  background: var(--color-divider);
+}
+
+.login-or-label {
+  font-size: var(--text-11);
+  letter-spacing: var(--tracking-kicker);
+}
+
+.login-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.login-forgot,
+.login-granted {
+  font-size: var(--text-13);
+  white-space: nowrap;
+}
+
+.login-granted {
+  font-size: var(--text-12);
+}
+
+.login-notice {
+  margin: 0;
+  padding-top: var(--space-3);
+  border-top: var(--rule-row) solid var(--color-neutral-300);
+  font-size: var(--text-12);
+}
+
+/* Phone: the brand panel becomes a short header, not a tall hero. */
+@media (max-width: 833.98px) {
+  .login-brand {
+    justify-content: flex-start;
+    gap: 18px;
+    padding: var(--space-7) 22px var(--space-6);
+  }
+
+  .login-logo {
+    height: 24px;
+  }
+
+  .login-brand-copy {
+    gap: var(--space-2);
+  }
+
+  .login-eyebrow {
+    font-size: var(--text-10);
+    letter-spacing: 0.16em;
+  }
+
+  .login-brand-title {
+    font-size: var(--text-26);
+    line-height: 1.15;
+  }
+
+  .login-form {
+    padding: var(--space-6) 22px var(--space-7);
+  }
+
+  .login-notice {
+    font-size: var(--text-11);
+  }
+}

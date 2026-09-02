@@ -1,0 +1,55 @@
+/* Screen 04 — Company profile. */
+
+.profile-page {
+  width: 100%;
+}
+
+.profile-lede {
+  margin: 0;
+  font-size: var(--text-13);
+}
+
+/* One column by default. From 1280px the extra width goes to placing the comp
+   bands beside the prose — the text fields keep a measure you can write in
+   instead of stretching across the viewport. */
+.profile-columns {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+}
+
+.profile-fields {
+  max-width: 720px;
+}
+
+@media (min-width: 1280px) {
+  .profile-columns {
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  .profile-fields {
+    max-width: none;
+  }
+}
+
+.profile-bands-heading {
+  margin: 0 0 var(--space-2);
+}
+
+.profile-bands-note {
+  margin: var(--space-3) 0 0;
+  font-size: var(--text-12);
+}
+
+.profile-save {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.profile-save-meta {
+  font-size: var(--text-12);
+}

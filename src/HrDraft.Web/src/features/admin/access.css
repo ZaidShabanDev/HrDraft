@@ -1,0 +1,12 @@
+/* Team access — the allowlist admin screen. */
+
+/* Fills the page width — a four-column table gains nothing from a narrower
+   measure, and the toggle column reads better pushed away from the email. */
+.access-page {
+  width: 100%;
+}
+
+.access-lede {
+  margin: 0;
+  font-size: var(--text-13);
+}

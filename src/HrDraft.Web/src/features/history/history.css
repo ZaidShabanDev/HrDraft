@@ -1,0 +1,29 @@
+/* Screen 05 — History. */
+
+/* Fills the page width — it's a data table, not prose. */
+.history-page {
+  width: 100%;
+}
+
+/* Filter and row menus anchor to their trigger; each menu positions itself. */
+.history-filter-anchor,
+.history-row-menu-anchor {
+  position: relative;
+  display: inline-flex;
+}
+
+.history-open {
+  color: var(--brand-700);
+}
+
+.history-footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.history-footer-note {
+  margin-left: auto;
+  font-size: var(--text-12);
+}

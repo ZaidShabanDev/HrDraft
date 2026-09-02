@@ -1,0 +1,163 @@
+/* Screen 01 — Tool picker. */
+
+.tools-intro {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-6);
+}
+
+.tools-intro-copy {
+  max-width: 640px;
+}
+
+.tools-heading {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-34);
+}
+
+.tools-lede {
+  margin: 0;
+  font-size: var(--text-14);
+}
+
+.tools-profile-link {
+  flex: none;
+}
+
+/* ── Desktop / tablet: cards in a ruled grid ───────────────────────────── */
+
+.tool-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-height: 150px;
+  padding: var(--space-5);
+  border: 0;
+  background: var(--color-bg);
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease);
+}
+
+.tool-card:hover {
+  background: var(--brand-100);
+}
+
+.tool-card-later,
+.tool-card-later:hover {
+  background: var(--color-surface);
+  cursor: default;
+}
+
+.tool-card-number {
+  font-size: var(--text-11);
+  letter-spacing: var(--tracking-label);
+}
+
+.tool-card-title {
+  margin: 0;
+  font-size: var(--text-19);
+}
+
+.tool-card-blurb {
+  margin: 0;
+  font-size: var(--text-13);
+}
+
+/* The arrow nudges right on hover. Horizontal travel suits a system where
+   nothing is allowed to float or lift. */
+.tool-card-open {
+  margin-top: auto;
+  color: var(--brand-700);
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: var(--text-13);
+}
+
+.tool-card-open > span {
+  display: inline-block;
+  transition: transform var(--duration-fast) var(--ease);
+}
+
+.tool-card:hover .tool-card-open > span,
+.tool-card:focus-visible .tool-card-open > span {
+  transform: translateX(var(--shift-sm));
+}
+
+@media (max-width: 1279.98px) {
+  .tool-card {
+    min-height: 128px;
+    padding: 18px;
+  }
+
+  .tool-card-title {
+    font-size: var(--text-18);
+  }
+}
+
+/* ── Phone: list rows ──────────────────────────────────────────────────── */
+
+.tool-list {
+  border-top: var(--rule-row) solid var(--color-neutral-300);
+}
+
+.tool-list-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: var(--control-height-touch);
+  padding: 14px 0;
+  border: 0;
+  border-bottom: var(--rule-row) solid var(--color-neutral-300);
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tool-list-number {
+  padding-top: 3px;
+  font-size: var(--text-11);
+  letter-spacing: var(--tracking-label);
+}
+
+.tool-list-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.tool-list-title {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: var(--text-16);
+}
+
+.tool-list-blurb {
+  font-size: var(--text-12);
+}
+
+.tool-list-row {
+  transition: background var(--duration-fast) var(--ease);
+}
+
+.tool-list-row:active {
+  background: var(--brand-100);
+}
+
+.tool-list-chevron {
+  color: var(--brand-500);
+  font-weight: var(--font-heading-weight);
+  transition: transform var(--duration-fast) var(--ease);
+}
+
+.tool-list-row:active .tool-list-chevron {
+  transform: translateX(var(--shift-sm));
+}

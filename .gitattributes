@@ -1,0 +1,32 @@
+# Normalise line endings so contributors on Windows, Linux and macOS don't
+# produce whole-file diffs against each other.
+#
+# Text is stored LF in the repository and checked out with the platform's own
+# convention. Without this, a Windows clone commits CRLF and every line of every
+# file shows as changed to everyone else.
+* text=auto
+
+# Always LF, whatever the platform — these are read by tools that care.
+*.sh   text eol=lf
+*.json text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+
+# Always CRLF — Windows-only files.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binary: never touch, never diff.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.pdf  binary
+*.woff binary
+*.woff2 binary
+*.docx binary
+
+# Generated — collapse it in diffs and reviews rather than scrolling past it.
+package-lock.json linguist-generated=true diff=none

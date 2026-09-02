@@ -1,0 +1,231 @@
+/* ============================================================================
+   Responsive layer.
+
+   Breakpoints from design artboard 2a — note 834 and 1280, matching iPad
+   widths rather than the usual 768/1024:
+
+     phone    < 834px    single column, list rows, docked actions, tab bar
+     tablet   834–1279   2-up grids, side rails become inline strips
+     desktop  >= 1280    4-up grids, side rails present
+
+   Keep these numbers in step with src/hooks/useBreakpoint.ts.
+   ========================================================================= */
+
+/* ── Visibility utilities ──────────────────────────────────────────────── */
+
+.only-desktop,
+.only-tablet,
+.only-phone,
+.tablet-up,
+.phone-tablet {
+  display: none;
+}
+
+@media (min-width: 1280px) {
+  .only-desktop,
+  .tablet-up {
+    display: revert;
+  }
+}
+
+@media (min-width: 834px) and (max-width: 1279.98px) {
+  .only-tablet,
+  .tablet-up,
+  .phone-tablet {
+    display: revert;
+  }
+}
+
+@media (max-width: 833.98px) {
+  .only-phone,
+  .phone-tablet {
+    display: revert;
+  }
+}
+
+/* ── Shell ─────────────────────────────────────────────────────────────── */
+
+.shell {
+  width: 100%;
+  max-width: var(--shell-max);
+  margin: 0 auto;
+}
+
+/* ── Main + rail layouts ───────────────────────────────────────────────────
+   Desktop keeps the rail as a fixed column with a 2px divider between.
+   Tablet and phone drop it entirely — the rail's content is re-rendered as an
+   inline strip (tablet) or a collapsed block (phone) by the page itself. */
+
+/* flex: 1 so the grid fills the height left under the page header. Its columns
+   stretch with it, which is what makes the side rail's surface reach the bottom
+   of the viewport instead of ending where its last link does. */
+.layout-rail {
+  display: grid;
+  grid-template-columns: 1fr;
+  flex: 1;
+}
+
+/* A column, so a page can push its action row to the bottom with margin-top. */
+.layout-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+@media (min-width: 1280px) {
+  .layout-rail-form {
+    grid-template-columns: 1fr var(--rail-form);
+  }
+
+  .layout-rail-draft {
+    grid-template-columns: 1fr var(--rail-draft);
+  }
+
+  .layout-rail > .layout-main {
+    border-right: var(--rule-section) solid var(--color-divider);
+  }
+}
+
+/* ── Tool grid: 4-up → 2-up → list ─────────────────────────────────────── */
+
+.tool-grid {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 1279.98px) {
+  .tool-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Below 834 the cards are replaced by .stacked-row list items, so the grid
+   itself is not rendered — no single-column rule needed here. */
+
+/* ── Paired form rows collapse ─────────────────────────────────────────── */
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-5);
+}
+
+@media (max-width: 833.98px) {
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+}
+
+/* ── Login split ───────────────────────────────────────────────────────── */
+
+.login-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 100vh;
+}
+
+@media (min-width: 834px) {
+  .login-split {
+    grid-template-columns: 1.15fr 1fr;
+  }
+}
+
+/* ── Content width ───────────────────────────────────────────────────────
+   Pages run full-bleed so the grid-paper ground reaches both edges. Readability
+   caps live on the two places that hold prose — .profile-page and .draft-body —
+   not on the page container. */
+
+/* ── Page padding tightens on small screens ────────────────────────────── */
+
+.page-pad {
+  padding: var(--space-8) var(--space-6) var(--space-10);
+}
+
+.chrome-pad {
+  padding: 14px var(--space-6);
+}
+
+@media (max-width: 1279.98px) {
+  .page-pad {
+    padding: var(--space-6) var(--space-5) var(--space-8);
+  }
+
+  .chrome-pad {
+    padding: var(--space-3) var(--space-5);
+  }
+}
+
+@media (max-width: 833.98px) {
+  .page-pad {
+    padding: var(--space-5) 18px var(--space-6);
+  }
+
+  .chrome-pad {
+    padding: var(--space-3) 18px;
+  }
+}
+
+/* ── Chrome sizing steps down below desktop ────────────────────────────── */
+
+@media (max-width: 1279.98px) {
+  .topbar-left {
+    gap: 18px;
+  }
+
+  .topbar-logo {
+    height: 18px;
+  }
+
+  .avatar {
+    width: 24px;
+    height: 24px;
+    font-size: var(--text-10);
+  }
+}
+
+/* ── Phone: touch targets and docked chrome ────────────────────────────── */
+
+@media (max-width: 833.98px) {
+  /* 44px minimum is an accessibility requirement, not a style choice. */
+  .btn,
+  .menu-item,
+  .option,
+  .tabbar-item,
+  .stacked-row {
+    min-height: var(--control-height-touch);
+  }
+
+  .input {
+    min-height: var(--control-height-touch);
+  }
+
+  /* Type steps down one notch so headings don't wrap awkwardly at 390px. */
+  h1 {
+    font-size: var(--text-28);
+  }
+
+  h2 {
+    font-size: var(--text-25);
+  }
+
+  h3 {
+    font-size: var(--text-22);
+  }
+
+  h4 {
+    font-size: var(--text-18);
+  }
+
+  .docked-bar,
+  .tabbar {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+  }
+}
+
+/* ── Wide content must scroll inside its own box, never the page ───────── */
+
+.scroll-x {
+  overflow-x: auto;
+}

@@ -1,0 +1,43 @@
+{
+  "$comment": [
+    "Deployment configuration. Everything here is optional — anything omitted",
+    "falls back to DEFAULT_CONFIG in appConfig.ts, so a fresh clone runs as-is.",
+    "",
+    "Set 'branding.theme.brand' to your brand colour and the whole 100-950 ramp",
+    "is derived from it in OKLCH at fixed lightness steps, which keeps contrast",
+    "predictable whatever the hue. Use 'brandRamp' only if a brand guideline",
+    "pins exact values.",
+    "",
+    "Drop logo files in public/assets/ and point 'logo.onDark' / 'logo.onLight'",
+    "at them. Leave them null and the app renders 'logo.wordmark' as text.",
+    "",
+    "Sign-in: a method left disabled is hidden, not greyed out. Entra and LDAP",
+    "also need server-side settings (tenant, client ID and secret, or the",
+    "domain controller) — those never appear in this file, which is served",
+    "publicly to the login page."
+  ],
+
+  "branding": {
+    "companyName": "Your Company",
+    "productName": "HrDraft",
+    "tagline": "Recruiting and onboarding documents, drafted",
+    "departmentName": "People & Culture",
+    "emailDomain": "example.com",
+    "logo": {
+      "onDark": null,
+      "onLight": null,
+      "wordmark": "HrDraft"
+    },
+    "theme": {
+      "brand": "#0d93ea"
+    }
+  },
+
+  "auth": {
+    "local": true,
+    "entra": { "enabled": false, "buttonLabel": "Continue with Microsoft" },
+    "ldap": { "enabled": false, "domainLabel": "Domain username" }
+  },
+
+  "dailyGenerationLimit": 20
+}

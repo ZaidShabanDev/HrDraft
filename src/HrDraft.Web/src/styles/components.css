@@ -1,0 +1,1625 @@
+?/* ============================================================================
+   Component layer — Modernist's classes, extended with every state the
+   UI kit (design artboard 3a) specifies.
+
+   Plain CSS on plain HTML. Every value comes from tokens.css.
+   Contract: docs/HR_Tools_App/notes/design-system-rules.md
+   ========================================================================= */
+
+/* ══ Motion ════════════════════════════════════════════════════════════
+   Enter/exit, open/closed and layout animation all live in Motion — see
+   src/lib/motion.ts and design-system-rules.md §7.
+
+   This stylesheet keeps only pointer feedback: hover tints and active states.
+   Those need no React render, run on the compositor, and work before hydration.
+   Motion's own guidance is the same. The global prefers-reduced-motion rule in
+   base.css neutralises them; MotionConfig handles the JS side.                */
+
+/* ── Rules ─────────────────────────────────────────────────────────────── */
+
+.hr {
+  height: var(--rule-section);
+  margin: var(--space-4) 0;
+  border: 0;
+  background: var(--color-divider);
+}
+
+/* ══ Buttons ═══════════════════════════════════════════════════════════ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: var(--space-2) calc(var(--space-3) * 1.2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: var(--text-14);
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease);
+}
+
+.btn:disabled,
+.btn[aria-disabled='true'] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--brand-500);
+  border-color: var(--brand-500);
+  color: var(--on-brand);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: var(--brand-600);
+  border-color: var(--brand-600);
+}
+
+.btn-primary:not(:disabled):active {
+  background: var(--brand-800);
+  border-color: var(--brand-800);
+}
+
+/* The primary button sits on the light ground, so its focus ring needs a
+   darker blue than the fill to stay visible against it. */
+.btn-primary:focus-visible {
+  outline-color: var(--brand-900);
+}
+
+.btn-secondary {
+  border-color: var(--color-divider);
+}
+
+.btn-secondary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--color-text) 7%, transparent);
+}
+
+.btn-secondary:not(:disabled):active {
+  background: color-mix(in srgb, var(--color-text) 14%, transparent);
+}
+
+.btn-ghost {
+  padding-inline: var(--space-1);
+  color: var(--brand-700);
+}
+
+.btn-ghost:not(:disabled):hover {
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+}
+
+.btn-ghost:not(:disabled):active {
+  background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+}
+
+/* Destructive reads as an outline, not a fill — a filled red button next to a
+   blue primary competes for the eye. The filled variant is reserved for the
+   confirm step inside a destructive dialog. */
+.btn-destructive {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.btn-destructive:not(:disabled):hover {
+  background: color-mix(in srgb, var(--color-danger) 8%, transparent);
+}
+
+.btn-destructive-solid {
+  background: var(--color-danger);
+  border-color: var(--color-danger);
+  color: var(--color-on-dark);
+}
+
+.btn-destructive-solid:not(:disabled):hover {
+  background: var(--color-danger-hover);
+  border-color: var(--color-danger-hover);
+}
+
+.btn-brand-dark {
+  background: var(--brand-950);
+  border-color: var(--brand-950);
+  color: var(--color-on-dark);
+}
+
+.btn-brand-dark:not(:disabled):hover {
+  background: var(--brand-800);
+  border-color: var(--brand-800);
+}
+
+.btn-icon {
+  width: var(--icon-button-size);
+  min-width: var(--icon-button-size);
+  height: var(--icon-button-size);
+  padding: 0;
+}
+
+/* Wide buttons keep their label flush left — a system rule, not an oversight. */
+.btn-block {
+  width: 100%;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.btn-loading {
+  opacity: 0.75;
+  cursor: progress;
+}
+
+.btn svg {
+  display: block;
+  flex: none;
+}
+
+/* Split button — two buttons sharing an edge, so the shared border stays 1px. */
+.btn-split {
+  display: inline-flex;
+}
+
+.btn-split > .btn:first-child {
+  border-right-width: 1px;
+}
+
+.btn-split > .btn:last-child {
+  border-left-width: 0;
+  min-width: 36px;
+  padding-inline: var(--space-2);
+}
+
+/* ══ Fields ════════════════════════════════════════════════════════════ */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.field > label {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--color-label);
+  font-size: var(--text-12);
+}
+
+/* Group label — for a set of controls with no single element to point a
+   <label> at (chips, button groups). Matches the field label exactly. */
+.field-group-label {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--color-label);
+  font-size: var(--text-12);
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.field-helper {
+  margin-top: var(--space-1);
+  color: var(--color-text-muted);
+  font-size: var(--text-12);
+}
+
+.field-error {
+  margin-top: var(--space-1);
+  color: var(--color-danger);
+  font-size: var(--text-12);
+}
+
+.field-counter {
+  align-self: flex-end;
+  margin-top: var(--space-1);
+  color: var(--color-text-muted);
+  font-size: var(--text-12);
+  font-variant-numeric: tabular-nums;
+}
+
+.input {
+  width: 100%;
+  min-height: var(--control-height);
+  padding: 6px 10px;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  caret-color: var(--color-accent);
+  font: inherit;
+  font-size: var(--text-14);
+}
+
+.input:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--color-text) 45%, transparent);
+}
+
+.input:focus-visible {
+  border-color: var(--color-accent);
+  outline-offset: 0;
+}
+
+.input:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.input-error,
+.input-error:hover {
+  border-color: var(--color-danger);
+}
+
+textarea.input {
+  min-height: 90px;
+  resize: vertical;
+}
+
+textarea.input.input-fixed {
+  resize: none;
+}
+
+/* ── Checkbox — square, 16px, accent fill when checked ─────────────────── */
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-13);
+  cursor: pointer;
+}
+
+.checkbox input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.checkbox .box {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  flex: none;
+  border: var(--rule-section) solid var(--color-text);
+  color: transparent;
+  font-size: var(--text-11);
+  line-height: 1;
+}
+
+.checkbox input:checked + .box {
+  border-color: var(--brand-500);
+  background: var(--brand-500);
+  color: var(--on-brand);
+}
+
+.checkbox:hover input:not(:disabled) + .box {
+  border-color: var(--brand-500);
+}
+
+.checkbox input:focus-visible + .box {
+  outline: var(--rule-section) solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.checkbox input:disabled ~ * {
+  opacity: 0.45;
+}
+
+/* ── Toggle — square track and knob. Nothing is rounded in this system. ── */
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-13);
+  cursor: pointer;
+}
+
+.toggle input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The knob is absolutely positioned rather than pushed by justify-content,
+   because that property can't be transitioned — the knob would teleport. */
+.toggle .track {
+  position: relative;
+  width: 34px;
+  height: 18px;
+  flex: none;
+  background: var(--color-neutral-300);
+  transition: background var(--duration-fast) var(--ease);
+}
+
+.toggle .knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  background: var(--color-on-dark);
+  /* 34 track − 2 padding × 2 − 14 knob = 16px of travel. */
+  transition: transform var(--duration-fast) var(--ease);
+}
+
+.toggle input:checked + .track {
+  background: var(--brand-500);
+}
+
+.toggle input:checked + .track .knob {
+  transform: translateX(16px);
+}
+
+.toggle input:focus-visible + .track {
+  outline: var(--rule-section) solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.toggle input:disabled ~ * {
+  opacity: 0.45;
+}
+
+/* ── Segmented control ─────────────────────────────────────────────────── */
+
+/* Explicit width, because inline-flex alone still gets stretched by a column
+   flex parent's default align-items: stretch — which leaves the options at
+   their natural size and a gap of dead track after them. */
+.seg {
+  display: inline-flex;
+  width: fit-content;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+/* Fills its container and divides evenly — the phone form of the control,
+   where the extra width is also extra touch target. */
+.seg-full {
+  width: 100%;
+}
+
+.seg-full .seg-opt {
+  flex: 1;
+}
+
+.seg-opt {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px var(--space-3);
+  font-size: var(--text-13);
+  cursor: pointer;
+}
+
+/* The sliding accent fill. Sits behind the label, which is why the label needs
+   its own stacking context above it. */
+.seg-indicator {
+  position: absolute;
+  inset: 0;
+  background: var(--brand-500);
+}
+
+.seg-label {
+  position: relative;
+  z-index: 1;
+  transition: color var(--duration-fast) var(--ease);
+}
+
+.seg-opt + .seg-opt {
+  border-left: 1px solid var(--color-divider);
+}
+
+.seg-opt input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The fill itself is the sliding .seg-indicator; this only flips the label. */
+.seg-opt:has(input:checked) {
+  color: var(--on-brand);
+}
+
+.seg-opt:not(:has(input:checked)):hover {
+  background: color-mix(in srgb, var(--color-text) 7%, transparent);
+}
+
+.seg-opt:has(input:focus-visible) {
+  outline: var(--rule-section) solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+/* ── Chips — multi-select. Selected fills, available outlines. ─────────── */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  font-size: var(--text-11);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.chip-selected {
+  background: var(--brand-500);
+  border-color: var(--brand-500);
+  color: var(--on-brand);
+}
+
+.chip-selected:hover {
+  background: var(--brand-600);
+  border-color: var(--brand-600);
+}
+
+.chip-available {
+  border-color: var(--color-accent);
+  color: var(--brand-700);
+}
+
+.chip-available:hover {
+  background: var(--brand-100);
+}
+
+/* ══ Tags — non-interactive labels ═════════════════════════════════════ */
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-size: var(--text-11);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.tag-accent {
+  background: var(--brand-100);
+  color: var(--brand-800);
+}
+
+.tag-neutral {
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-800);
+}
+
+.tag-outline {
+  border-color: var(--color-accent);
+  color: var(--brand-700);
+}
+
+.tag-on-dark {
+  border-color: var(--color-on-dark-rule-soft);
+  color: var(--color-on-dark);
+  font-size: var(--text-10);
+}
+
+/* ══ Layout frame ══════════════════════════════════════════════════════ */
+
+/* Full viewport height so the single grid-paper layer, the docked action bar
+   and the phone tab bar all reach the bottom edge on short pages. */
+.app-frame {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* The height chain: .app-frame → .app-content → .page-frame → the page's own
+   fill element. Every link has to be a flex column, or a page can't reach the
+   bottom of the viewport and side rails stop where their text stops. */
+.app-frame > .app-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.app-frame > .app-content {
+  position: relative;
+}
+
+.page-frame {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Route changes are not animated. Navigation in a tool used all day should be
+   instant, and every attempt at a page transition here read as decoration. */
+
+/* ══ Panels ════════════════════════════════════════════════════════════ */
+
+/* The system's framed box: 2px outer rule, optional 4px accent top edge.
+   Transparent, so the app's grid paper reads straight through the body. */
+.panel {
+  border: var(--rule-section) solid var(--color-divider);
+  background: transparent;
+}
+
+.panel-accent {
+  border-top: var(--rule-accent) solid var(--brand-500);
+}
+
+/* Opaque, to mask the grid behind the title bar — the design keeps panel
+   headers flat and only the body ruled. */
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  border-bottom: var(--rule-section) solid var(--color-divider);
+  background: var(--color-bg);
+}
+
+.panel-title {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: var(--text-15);
+}
+
+.panel-body {
+  padding: var(--space-5);
+}
+
+/* Section label over a 2px rule — the pattern above each tool group. */
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: var(--rule-section) solid var(--color-divider);
+}
+
+.section-heading h6 {
+  margin: 0;
+}
+
+.section-heading-meta {
+  font-size: var(--text-12);
+}
+
+.section-heading-trailing {
+  margin-left: auto;
+}
+
+/* ── Stack — vertical flow at a token gap ──────────────────────────────── */
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.stack-2 {
+  gap: var(--space-2);
+}
+.stack-3 {
+  gap: var(--space-3);
+}
+.stack-4 {
+  gap: var(--space-4);
+}
+.stack-5 {
+  gap: var(--space-5);
+}
+.stack-6 {
+  gap: var(--space-6);
+}
+.stack-7 {
+  gap: var(--space-7);
+}
+.stack-8 {
+  gap: var(--space-8);
+}
+
+/* Grid-paper grounds. Applied to content areas, not to chrome. */
+.paper {
+  background-color: var(--color-bg);
+  background-image: var(--paper);
+  background-size: var(--paper-size);
+}
+
+.paper-dark {
+  background-color: var(--brand-950);
+  background-image: var(--paper-dark);
+  background-size: var(--paper-size);
+}
+
+/* ══ Grid lines ════════════════════════════════════════════════════════
+   Drawn as a 1px gap over a divider-colored ground rather than per-cell
+   borders, so the lines reflow correctly when the column count changes.
+   Per-cell borders leave a stray trailing line at the wrap. */
+
+.gridlines {
+  display: grid;
+  gap: 1px;
+  background: var(--color-neutral-300);
+  border: 1px solid var(--color-neutral-300);
+}
+
+.gridlines > * {
+  background: var(--color-bg);
+}
+
+/* ══ Tables ════════════════════════════════════════════════════════════ */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-13);
+}
+
+.table th {
+  padding: var(--space-2);
+  border-bottom: var(--rule-section) solid var(--color-divider);
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+  font-size: var(--text-11);
+  font-weight: 400;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  text-align: left;
+}
+
+.table td {
+  padding: var(--space-2);
+  border-bottom: var(--rule-row) solid var(--color-divider);
+}
+
+.table tbody tr:hover {
+  background: color-mix(in srgb, var(--color-text) 4%, transparent);
+}
+
+.table tbody tr[aria-selected='true'] {
+  background: var(--brand-100);
+}
+
+.table-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.table-sort:hover {
+  color: var(--brand-700);
+}
+
+/* ══ Overlay surfaces — dropdowns, menus, dialogs ══════════════════════
+   All share a 2px ink border and NO shadow: the design is explicit that
+   nothing floats or drifts. */
+
+/* Every overlay sets colour as well as background. Menus and sheets can be
+   rendered inside the navy chrome, which sets `color: white` for its own
+   contents — without this they inherit white text on a light panel. */
+.overlay-surface {
+  border: var(--rule-section) solid var(--color-text);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.scrim {
+  position: fixed;
+  inset: 0;
+  background: var(--color-scrim);
+}
+
+/* ── Option lists (select, typeahead, menus) ───────────────────────────── */
+
+.option-group-label {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: var(--rule-row) solid var(--color-neutral-300);
+  background: var(--color-surface);
+  font-size: var(--text-12);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: var(--control-height-touch);
+  padding: 11px var(--space-3);
+  border: 0;
+  border-bottom: var(--rule-row) solid var(--color-neutral-300);
+  background: transparent;
+  font-size: var(--text-13);
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease);
+}
+
+.option:last-child {
+  border-bottom: 0;
+}
+
+.option:hover:not([aria-disabled='true']) {
+  background: var(--color-surface);
+}
+
+.option[aria-selected='true'] {
+  background: var(--brand-100);
+  color: var(--brand-900);
+}
+
+.option[aria-selected='true'] .option-check {
+  color: var(--brand-700);
+}
+
+.option[aria-disabled='true'] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.option-match {
+  color: var(--brand-700);
+  font-weight: 600;
+}
+
+.option-footer {
+  padding: var(--space-2) var(--space-3);
+  color: var(--color-text-muted);
+  font-size: var(--text-12);
+}
+
+/* ── Select and typeahead ──────────────────────────────────────────────── */
+
+/* The panel is absolutely positioned so an open dropdown doesn't reflow the
+   form beneath it. */
+.select-field {
+  position: relative;
+}
+
+.select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  text-align: left;
+  cursor: pointer;
+}
+
+.select-caret-open {
+  color: var(--brand-500);
+}
+
+.select-panel {
+  position: absolute;
+  top: calc(100% + var(--space-1));
+  left: 0;
+  right: 0;
+  z-index: 20;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+/* Keyboard cursor. Distinct from :hover so pointer and keyboard don't fight,
+   and from [aria-selected] so "focused" reads differently from "chosen". */
+.option-active {
+  box-shadow: inset var(--rule-active) 0 0 0 var(--brand-500);
+}
+
+.typeahead-control {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.typeahead-clear {
+  position: absolute;
+  right: var(--space-2);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+/* Joins the field above it — hence no top border, and it unfurls from that
+   edge (transform-origin) rather than dropping away from it. */
+.typeahead-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  border-top: 0;
+  max-height: 320px;
+  overflow-y: auto;
+  transform-origin: top center;
+}
+
+/* ── Menus ─────────────────────────────────────────────────────────────── */
+
+.menu {
+  width: var(--menu-width);
+  border: var(--rule-section) solid var(--color-text);
+  background: var(--color-bg);
+  /* See .overlay-surface — the account menu lives inside the navy topbar. */
+  color: var(--color-text);
+}
+
+/* Menus anchor themselves against the nearest positioned ancestor, so a call
+   site only needs `position: relative` on its trigger wrapper. */
+.menu-left,
+.menu-right {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  z-index: 40;
+}
+
+.menu-left {
+  left: 0;
+}
+
+.menu-right {
+  right: 0;
+}
+
+.menu-header {
+  padding: var(--space-3);
+  border-bottom: var(--rule-section) solid var(--color-divider);
+}
+
+.menu-item {
+  display: block;
+  width: 100%;
+  padding: var(--space-3);
+  border: 0;
+  border-bottom: var(--rule-row) solid var(--color-neutral-300);
+  background: transparent;
+  font-size: var(--text-13);
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease);
+}
+
+.menu-item:last-child {
+  border-bottom: 0;
+}
+
+.menu-item:hover {
+  background: var(--color-surface);
+}
+
+/* A 2px rule separates destructive actions from everything above them, so a
+   mis-aimed click lands on a boundary rather than on Delete. */
+.menu-item-destructive {
+  border-top: var(--rule-section) solid var(--color-divider);
+  color: var(--color-danger);
+}
+
+.menu-item-destructive:hover {
+  background: color-mix(in srgb, var(--color-danger) 8%, transparent);
+}
+
+/* ── Action sheet (phone) ──────────────────────────────────────────────── */
+
+.sheet {
+  border-top: var(--rule-section) solid var(--color-text);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.sheet-handle {
+  width: 44px;
+  height: 3px;
+  margin: var(--space-2) auto;
+  background: var(--color-neutral-300);
+}
+
+.sheet-item {
+  display: block;
+  width: 100%;
+  min-height: var(--control-height-touch);
+  padding: 13px 14px;
+  border: 0;
+  border-top: var(--rule-row) solid var(--color-neutral-300);
+  background: transparent;
+  font-size: var(--text-14);
+  text-align: left;
+  cursor: pointer;
+}
+
+.sheet-item-destructive {
+  color: var(--color-danger);
+}
+
+.sheet-item-cancel {
+  border-top: var(--rule-section) solid var(--color-divider);
+  font-weight: 600;
+}
+
+/* ── Overlay layers ────────────────────────────────────────────────────── */
+
+.dialog-layer,
+.sheet-layer,
+.drawer-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+}
+
+/* The scrim fades and the surface above it travels — both in Motion. */
+
+.dialog-layer {
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+}
+
+.dialog-layer > .dialog {
+  position: relative;
+}
+
+/* Sheets dock to the bottom edge, so they arrive from it. */
+.sheet-layer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.sheet-docked {
+  position: relative;
+}
+
+.sheet-destructive {
+  border-top-color: var(--color-danger);
+}
+
+/* Drawer sits at the right, leaving a strip of scrim so the page behind stays
+   visible and tappable-to-dismiss. */
+.drawer-layer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.drawer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: calc(100% - var(--drawer-scrim-strip));
+  max-width: 320px;
+  padding: var(--space-4) 14px;
+  color: var(--color-on-dark);
+}
+
+.drawer-link {
+  padding-left: 13px;
+  border: 0;
+  border-left: var(--rule-active) solid transparent;
+  background: none;
+  color: var(--color-on-dark-muted);
+  font-size: var(--text-13);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.drawer-link[aria-current='page'] {
+  padding-left: 10px;
+  border-left-color: var(--brand-500);
+  color: var(--color-on-dark);
+}
+
+.drawer-footer {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: var(--rule-row) solid var(--color-on-dark-rule);
+  color: var(--color-on-dark-muted);
+  font-size: var(--text-11);
+}
+
+/* ── Dialog ────────────────────────────────────────────────────────────── */
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+  width: min(560px, 100%);
+  border: var(--rule-section) solid var(--color-text);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.dialog-destructive {
+  border-color: var(--color-danger);
+}
+
+.dialog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) 18px;
+  border-bottom: var(--rule-section) solid var(--color-divider);
+}
+
+.dialog-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4) 18px;
+  font-size: var(--text-13);
+  line-height: 1.6;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: 14px 18px;
+  border-top: var(--rule-section) solid var(--color-divider);
+}
+
+/* Phone: buttons stack full-width, primary first. */
+.dialog-footer-stacked {
+  flex-direction: column;
+  padding-bottom: 18px;
+}
+
+.dialog-footer-stacked .btn {
+  width: 100%;
+  min-height: var(--control-height-touch);
+  justify-content: flex-start;
+}
+
+.dialog-close {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text-muted);
+  font-size: var(--text-16);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.dialog-close:hover {
+  color: var(--color-text);
+}
+
+/* Dialog and banner kickers. Accent text sits at 700 minimum on this ground. */
+.kicker-accent {
+  margin: 0 0 var(--space-1);
+  color: var(--brand-700);
+}
+
+.kicker-danger {
+  margin: 0 0 var(--space-1);
+  color: var(--color-danger);
+}
+
+/* ══ Feedback ══════════════════════════════════════════════════════════ */
+
+/* Toasts stack bottom-right on desktop and span the width on phone, above the
+   docked action bar. */
+.toast-stack {
+  position: fixed;
+  right: var(--space-6);
+  bottom: var(--space-6);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: min(420px, calc(100vw - var(--space-8)));
+}
+
+@media (max-width: 833.98px) {
+  .toast-stack {
+    right: var(--space-3);
+    left: var(--space-3);
+    bottom: calc(var(--control-height-touch) + var(--space-4));
+    width: auto;
+  }
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 14px;
+  background: var(--brand-950);
+  color: var(--color-on-dark);
+  font-size: var(--text-13);
+  box-shadow: var(--shadow-md);
+}
+
+.toast-error {
+  background: var(--color-danger);
+}
+
+.toast-action {
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--brand-300);
+  font: inherit;
+  cursor: pointer;
+}
+
+.toast-error .toast-action {
+  color: var(--color-on-dark);
+  text-decoration: underline;
+}
+
+.banner {
+  padding: var(--space-3);
+  border: var(--rule-section) solid var(--brand-500);
+  background: var(--brand-100);
+}
+
+.banner-danger {
+  border-color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 8%, var(--color-bg));
+}
+
+.banner-body {
+  margin: 0;
+  font-size: var(--text-13);
+  line-height: 1.6;
+}
+
+.progress-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.progress-caption {
+  font-size: var(--text-12);
+}
+
+.progress {
+  height: 4px;
+  overflow: hidden;
+  background: var(--color-neutral-300);
+}
+
+/* Width is driven by Motion when a percentage is known — see ProgressBar. */
+.progress > span {
+  display: block;
+  height: 100%;
+  background: var(--brand-500);
+}
+
+/* Indeterminate: a travelling segment, for when there's no percentage to show. */
+.progress > span.progress-indeterminate {
+  width: 40%;
+  animation: progress-slide 1.4s ease-in-out infinite;
+}
+
+@keyframes progress-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+/* The pulse is driven by Motion so the stagger is expressed once, in the
+   component, instead of as a run of nth-child delays. */
+.skeleton > span {
+  display: block;
+  height: 10px;
+  background: var(--color-neutral-300);
+}
+
+.skeleton > span:first-child {
+  height: 14px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: 18px;
+  border: 1px dashed var(--color-neutral-300);
+}
+
+.empty-state-body {
+  margin: 0;
+  font-size: var(--text-12);
+}
+
+/* ══ Chrome ════════════════════════════════════════════════════════════ */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: 14px var(--space-6);
+  background: var(--brand-950);
+  color: var(--color-on-dark);
+}
+
+/* ── Brand mark ────────────────────────────────────────────────────────────
+   One component covers both a logo file and the text wordmark it falls back
+   to, so callers never branch on whether a deployment has uploaded a logo. */
+
+.brand-logo {
+  display: block;
+  width: auto;
+  flex: none;
+}
+
+.brand-logo-sm {
+  height: 19px;
+}
+.brand-logo-md {
+  height: 24px;
+}
+.brand-logo-lg {
+  height: 34px;
+}
+
+/* The wordmark has to hold its own next to a real logo: heading face, heavy,
+   tracked out slightly so it reads as a mark rather than as a label. */
+.brand-wordmark {
+  display: inline-flex;
+  align-items: center;
+  height: auto;
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.brand-wordmark.brand-logo-sm {
+  font-size: var(--text-18);
+}
+.brand-wordmark.brand-logo-md {
+  font-size: var(--text-22);
+}
+.brand-wordmark.brand-logo-lg {
+  font-size: var(--text-28);
+}
+
+.brand-wordmark.brand-logo-dark {
+  color: var(--color-on-dark);
+}
+
+.brand-wordmark.brand-logo-light {
+  color: var(--color-text);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  min-width: 0;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex: none;
+}
+
+.topbar-brand {
+  display: block;
+  flex: none;
+}
+
+.topbar-logo {
+  height: 19px;
+  width: auto;
+}
+
+.topbar-eyebrow {
+  padding-left: var(--space-5);
+  border-left: var(--rule-row) solid var(--color-on-dark-rule-strong);
+  color: var(--color-on-dark-body);
+  font-size: var(--text-12);
+  letter-spacing: var(--tracking-kicker);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.topbar-quota {
+  color: var(--color-on-dark-body);
+  font-size: var(--text-12);
+  white-space: nowrap;
+}
+
+.topbar-link {
+  border: 0;
+  border-bottom: var(--rule-section) solid transparent;
+  padding-bottom: 2px;
+  background: none;
+  color: var(--color-on-dark-body);
+  font-size: var(--text-13);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.topbar-link {
+  transition:
+    color var(--duration-fast) var(--ease),
+    border-bottom-color var(--duration-fast) var(--ease);
+}
+
+.topbar-link:hover {
+  color: var(--color-on-dark);
+}
+
+.topbar-link[aria-current='page'] {
+  border-bottom-color: var(--color-accent);
+  color: var(--color-on-dark);
+}
+
+.topbar-account {
+  position: relative;
+}
+
+.menu-header-name {
+  font-size: var(--text-13);
+  font-weight: 600;
+}
+
+.menu-header-role {
+  font-size: var(--text-12);
+}
+
+.avatar-button {
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  width: 16px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.hamburger > span {
+  display: block;
+  height: 2px;
+  background: var(--color-on-dark);
+}
+
+.drawer-logo {
+  height: 16px;
+  width: auto;
+  align-self: flex-start;
+  flex: none;
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  background: var(--brand-600);
+  color: var(--on-brand);
+  font-size: var(--text-11);
+  font-weight: 600;
+}
+
+.tabbar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: var(--rule-section) solid var(--color-divider);
+  background: var(--color-bg);
+}
+
+.tabbar-item {
+  min-height: var(--control-height-touch);
+  padding: var(--space-3) 0;
+  border: 0;
+  border-top: var(--rule-active) solid transparent;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--text-11);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.tabbar-item[aria-current='page'] {
+  border-top-color: var(--brand-500);
+  color: var(--brand-700);
+}
+
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: 10px var(--space-6);
+  border-bottom: var(--rule-row) solid var(--color-neutral-300);
+  font-size: var(--text-12);
+  letter-spacing: var(--tracking-tab);
+  text-transform: uppercase;
+}
+
+.tab {
+  padding: 0 0 2px;
+  border: 0;
+  border-bottom: var(--rule-section) solid transparent;
+  background: none;
+  color: var(--color-text-muted);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--ease),
+    border-bottom-color var(--duration-fast) var(--ease);
+}
+
+.tab:hover {
+  color: var(--color-text);
+}
+
+.tab[aria-selected='true'] {
+  border-bottom-color: var(--color-accent);
+  color: var(--color-text);
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: var(--text-13);
+}
+
+/* Docked action bar — phone. The primary action is always reachable. */
+.docked-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: var(--space-3) 18px;
+  border-top: var(--rule-section) solid var(--color-divider);
+  background: var(--color-bg);
+}
+
+.docked-bar .btn {
+  min-height: var(--control-height-touch);
+}
+
+/* The leading action fills the bar; trailing ones stay their natural width. */
+.docked-bar .btn:first-child {
+  flex: 1;
+  justify-content: center;
+}
+
+/* Two equally weighted actions, e.g. Copy / Save on a finished draft. */
+.docked-bar-even .btn {
+  flex: 1;
+  justify-content: center;
+}
+
+.table-row-clickable {
+  cursor: pointer;
+}
+
+/* ── Search and filters ────────────────────────────────────────────────── */
+
+.search-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 200px;
+  max-width: 100%;
+}
+
+.search-input .input {
+  padding-right: var(--space-8);
+}
+
+.search-input-icon {
+  position: absolute;
+  right: 10px;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.toolbar-count {
+  margin-left: auto;
+  color: var(--color-text-muted);
+  font-size: var(--text-12);
+}
+
+/* ── Stacked rows — the phone stand-in for a table ─────────────────────── */
+
+.stacked-list {
+  border-top: var(--rule-row) solid var(--color-neutral-300);
+}
+
+.stacked-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3) 0;
+  border: 0;
+  border-bottom: var(--rule-row) solid var(--color-neutral-300);
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+}
+
+button.stacked-row {
+  cursor: pointer;
+}
+
+.stacked-row-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.stacked-row-title {
+  font-size: var(--text-14);
+  font-weight: 600;
+}
+
+.stacked-row-meta {
+  color: var(--color-text-muted);
+  font-size: var(--text-12);
+}

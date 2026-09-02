@@ -1,0 +1,76 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Secrets. Nothing below ever belongs in a commit.
+# ─────────────────────────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+appsettings.Development.json
+appsettings.Local.json
+appsettings.Production.json
+*.pfx
+*.key
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Company-specific assets — the reason this section exists is that HrDraft is
+# open source but was built inside a company.
+#
+# The design bundle contains the originating company's logo files, its branded
+# design sketch and screenshots of its website. None of that is HrDraft's to
+# publish, and a push is hard to undo. It stays on disk for local reference.
+#
+# If you fork this and want your own brand assets tracked, delete these two
+# rules — your logos are yours to commit.
+# ─────────────────────────────────────────────────────────────────────────────
+docs/**/design/
+src/HrDraft.Web/public/assets/*
+# The folder's own instructions stay tracked — otherwise a fresh clone gets an
+# empty directory with no hint about what belongs in it.
+!src/HrDraft.Web/public/assets/README.md
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Node / Vite
+# ─────────────────────────────────────────────────────────────────────────────
+node_modules/
+dist/
+dist-ssr/
+.vite/
+*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# The SPA build lands in the API's wwwroot — generated, never committed.
+src/HrDraft.Api/wwwroot/
+
+# ─────────────────────────────────────────────────────────────────────────────
+# .NET
+# ─────────────────────────────────────────────────────────────────────────────
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+TestResults/
+*.coverage
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Editors / OS
+# ─────────────────────────────────────────────────────────────────────────────
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json.example
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Claude Code — local permission grants are per-machine.
+# ─────────────────────────────────────────────────────────────────────────────
+.claude/settings.local.json

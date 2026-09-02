@@ -1,0 +1,28 @@
+# TFS ignore. A leading '\' anchors to the repository root; '!' re-includes.
+
+# Node
+\src\Incube.HRTools.Web\node_modules
+\src\Incube.HRTools.Web\dist
+\src\Incube.HRTools.Web\.vite
+
+# .NET build output
+\src\**\bin
+\src\**\obj
+
+# The SPA build lands in the API's wwwroot — generated, never checked in.
+\src\Incube.HRTools.Api\wwwroot
+
+# Secrets. ANTHROPIC_API_KEY, the SQL connection string and the Entra client
+# secret live in environment variables / IIS app settings, never in source.
+.env
+.env.*
+\src\Incube.HRTools.Api\appsettings.Development.json
+\src\Incube.HRTools.Api\appsettings.Local.json
+
+# Editor and OS noise
+.vs
+.idea
+*.user
+*.suo
+Thumbs.db
+desktop.ini

@@ -1,0 +1,247 @@
+/* ============================================================================
+   HrDraft — design tokens.
+   THE single source of truth for every color, size, font and rule weight.
+
+   Built on the Modernist design system, re-themed from a single brand colour. The
+   source loads Modernist's red-accent styles.css and then overrides it inline;
+   those two layers are MERGED here so there is never a question of which wins.
+
+   Contract and rationale: docs/HR_Tools_App/notes/design-system-rules.md
+   Never hard-code a hex or a px value that a token below already carries.
+   ========================================================================= */
+
+:root {
+  /* ── Brand ────────────────────────────────────────────────────────────
+     ONE value defines the palette. Everything else is derived.
+
+     A deployment sets --brand (via config/deployment.json, applied to :root by
+     ConfigProvider) and the 100–950 ramp follows. The fallback ramp below is
+     the default blue, hand-listed for browsers without relative colour syntax;
+     the @supports block after :root replaces it with the derived version. */
+  --brand: #0d93ea;
+
+  --brand-100: #e0f0fe;
+  --brand-200: #bae1fd;
+  --brand-300: #7cc9fd;
+  --brand-400: #37aef9;
+  --brand-500: #0d93ea;
+  --brand-600: #0170c1;
+  --brand-700: #025ca2;
+  --brand-800: #064f86;
+  --brand-900: #0c426e;
+  --brand-950: #082a49;
+
+  /* Text/icon colour for anything sitting on a --brand-500 fill. White for a
+     mid-to-dark brand; overridden to ink for a light one in the @supports
+     block, because white on a pale brand is unreadable. */
+  --on-brand: #ffffff;
+
+  /* Accent aliases onto the brand ramp. Modernist is a mono scheme: the
+     accent-2 role resolves to the same blue — treat them as one voice. */
+  --color-accent: var(--brand-500);
+  --color-accent-100: var(--brand-100);
+  --color-accent-200: var(--brand-200);
+  --color-accent-300: var(--brand-300);
+  --color-accent-400: var(--brand-400);
+  --color-accent-500: var(--brand-500);
+  --color-accent-600: var(--brand-600);
+  --color-accent-700: var(--brand-700);
+  --color-accent-800: var(--brand-800);
+  --color-accent-900: var(--brand-900);
+
+  /* ── Ground and ink ─────────────────────────────────────────────────── */
+  --color-bg: #f3f2f2;
+  --color-surface: #eae9e9;
+  --color-text: #201e1d;
+  --color-divider: color-mix(in srgb, #201e1d 40%, transparent);
+  --color-on-dark: #ffffff;
+
+  /* Neutral ramp — generated in OKLCH on one shared lightness scale, so the
+     same step of any role matches the others in visual value. */
+  --color-neutral-100: #f8f4f4;
+  --color-neutral-200: #eae7e7;
+  --color-neutral-300: #d7d3d3;
+  --color-neutral-400: #bab6b6;
+  --color-neutral-500: #9b9797;
+  --color-neutral-600: #7d7979;
+  --color-neutral-700: #605d5d;
+  --color-neutral-800: #444141;
+  --color-neutral-900: #2d2b2b;
+
+  /* ── Danger — destructive actions only, never decoration ────────────── */
+  --color-danger: #b42318;
+  --color-danger-hover: #99200f;
+
+  /* ── Muted text ─────────────────────────────────────────────────────── */
+  --color-text-muted: color-mix(in srgb, var(--color-text) 55%, transparent);
+  --color-label: color-mix(in srgb, var(--color-text) 70%, transparent);
+
+  /* On-dark chrome text: brand-300 for secondary, brand-100 for body */
+  --color-on-dark-muted: var(--brand-300);
+  --color-on-dark-body: var(--brand-100);
+  --color-on-dark-rule: rgba(255, 255, 255, 0.25);
+  --color-on-dark-rule-strong: rgba(255, 255, 255, 0.3);
+  --color-on-dark-rule-soft: rgba(255, 255, 255, 0.4);
+
+  /* ── Scrim — navy at 45%, used by dialogs, sheets and the phone drawer ─ */
+  --color-scrim: rgba(8, 42, 73, 0.45);
+
+  /* ── Type ───────────────────────────────────────────────────────────── */
+  --font-heading: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-heading-weight: 800;
+
+  --text-10: 10px;
+  --text-11: 11px;
+  --text-12: 12px;
+  --text-13: 13px;
+  --text-14: 14px;
+  --text-15: 15px;
+  --text-16: 16px;
+  --text-18: 18px;
+  --text-19: 19px;
+  --text-20: 20px;
+  --text-22: 22px;
+  --text-25: 25px;
+  --text-26: 26px;
+  --text-28: 28px;
+  --text-32: 32px;
+  --text-34: 34px;
+  --text-40: 40px;
+  --text-42: 42px;
+
+  --tracking-tight: -0.015em;
+  --tracking-label: 0.08em;
+  --tracking-kicker: 0.14em;
+  --tracking-hero: 0.18em;
+  --tracking-tab: 0.06em;
+
+  /* ── Spacing ────────────────────────────────────────────────────────── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-11: 44px;
+
+  /* ── Radius — zero everywhere, on purpose. Do not round a corner. ───── */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+
+  /* ── Rule weights ───────────────────────────────────────────────────── */
+  --rule-section: 2px; /* between major sections */
+  --rule-row: 1px; /* between rows inside a section */
+  --rule-accent: 4px; /* the panel-header top accent */
+  --rule-active: 3px; /* active nav indicator */
+
+  /* ── Elevation — ink-tinted, tuned to the light ground.
+     Used sparingly: the design's dropdowns and dialogs carry a 2px ink
+     border INSTEAD of a shadow. ─────────────────────────────────────── */
+  --shadow-sm: 0 1px 2px color-mix(in srgb, #2d2b2b 14%, transparent);
+  --shadow-md: 0 3px 10px color-mix(in srgb, #2d2b2b 16%, transparent);
+  --shadow-lg: 0 12px 32px color-mix(in srgb, #2d2b2b 22%, transparent);
+
+  /* ── Controls ───────────────────────────────────────────────────────── */
+  --control-height: 36px;
+  --control-height-touch: 44px; /* phone minimum — accessibility, not taste */
+  --icon-button-size: 40px;
+
+  /* ── Layout ─────────────────────────────────────────────────────────── */
+  --shell-max: 1280px;
+  --rail-form: 360px;
+  --rail-draft: 300px;
+  --menu-width: 240px;
+  --drawer-scrim-strip: 64px;
+
+  /* ── Grid paper — 16px fine over 96px major ───────────────────────────
+     Line colours and spacings are separate tokens so the paper can be retuned
+     in one place rather than in four gradient stops. */
+  --paper-line-major: rgba(2, 92, 162, 0.13);
+  --paper-line-fine: rgba(2, 92, 162, 0.055);
+  --paper-step-major: 96px;
+  --paper-step-fine: 16px;
+
+  --paper: linear-gradient(to right, var(--paper-line-major) 0 1px, transparent 1px 100%),
+    linear-gradient(to bottom, var(--paper-line-major) 0 1px, transparent 1px 100%),
+    linear-gradient(to right, var(--paper-line-fine) 0 1px, transparent 1px 100%),
+    linear-gradient(to bottom, var(--paper-line-fine) 0 1px, transparent 1px 100%);
+  --paper-dark: linear-gradient(to right, rgba(124, 201, 253, 0.14) 0 1px, transparent 1px 100%),
+    linear-gradient(to bottom, rgba(124, 201, 253, 0.14) 0 1px, transparent 1px 100%),
+    linear-gradient(to right, rgba(124, 201, 253, 0.06) 0 1px, transparent 1px 100%),
+    linear-gradient(to bottom, rgba(124, 201, 253, 0.06) 0 1px, transparent 1px 100%);
+  --paper-size: 96px 96px, 96px 96px, 16px 16px, 16px 16px;
+
+  /* ── Motion ─────────────────────────────────────────────────────────────
+     Restrained on purpose: this system is flat and architectural, so movement
+     is short, straight and never overshoots. No spring, no bounce, no scale —
+     surfaces travel along one axis and stop. Anything above ~250ms starts to
+     feel slow in a tool someone uses all day.
+
+     These are the canonical values. Enter/exit and layout animation run in
+     Motion, and src/lib/motion.ts mirrors the numbers below — change them in
+     both or the two layers drift. Some tokens here are read only by the JS
+     side; they stay declared so the vocabulary lives in one place. */
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-slow: 240ms;
+
+  /* Decelerating — for things entering the screen. */
+  --ease: cubic-bezier(0.2, 0, 0.3, 1);
+  /* Accelerating — for things leaving it. */
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+
+  /* How far a surface travels as it appears. Small: these are hints of
+     direction, not journeys. */
+  --shift-sm: 4px;
+  --shift-md: 8px;
+}
+
+/* ══ Derived brand ramp ═════════════════════════════════════════════════
+   The ramp is generated from --brand in OKLCH, which is why HrDraft can be
+   rebranded by changing a single hex value.
+
+   Lightness is PINNED per step rather than scaled from the seed. That's the
+   whole point: because step 700 is always L=0.45 whatever the hue, "accent text
+   uses 700 minimum on the light ground" stays true for a red brand, a green one
+   or a purple one. Scaling from the seed instead would make contrast depend on
+   how light the company's logo happens to be.
+
+   Chroma is scaled from the seed (`calc(c * n)`) so a muted brand yields a muted
+   ramp and a vivid one stays vivid — saturation is character, lightness is
+   legibility.
+
+   Step 500 keeps the seed exactly, so a company's own colour appears untouched
+   on primary buttons. If their brand is very light or very dark the ramp has a
+   small discontinuity there; pin `brandRamp` values in deployment.json if that
+   matters more than the exact match. */
+@supports (color: oklch(from red l c h)) {
+  :root {
+    --brand-100: oklch(from var(--brand) 0.95 calc(c * 0.3) h);
+    --brand-200: oklch(from var(--brand) 0.89 calc(c * 0.52) h);
+    --brand-300: oklch(from var(--brand) 0.81 calc(c * 0.72) h);
+    --brand-400: oklch(from var(--brand) 0.72 calc(c * 0.9) h);
+    --brand-500: var(--brand);
+    --brand-600: oklch(from var(--brand) 0.52 calc(c * 1.02) h);
+    --brand-700: oklch(from var(--brand) 0.45 calc(c * 0.98) h);
+    --brand-800: oklch(from var(--brand) 0.39 calc(c * 0.92) h);
+    --brand-900: oklch(from var(--brand) 0.34 calc(c * 0.84) h);
+    --brand-950: oklch(from var(--brand) 0.25 calc(c * 0.72) h);
+
+    /* Near-binary black-or-white pick, in pure CSS: the clamp collapses to 1
+       (white) below L 0.7 and to 0 (ink) above it, so a yellow or lime brand
+       gets dark text on its buttons instead of unreadable white. */
+    --on-brand: oklch(from var(--brand) clamp(0, calc((0.7 - l) * 100), 1) 0 h);
+  }
+}
+
+/* Breakpoint values live here as reference only — CSS cannot use custom
+   properties in media queries. Keep responsive.css and useBreakpoint.ts in
+   step with these numbers.
+     phone   < 834px
+     tablet  834px – 1279px
+     desktop >= 1280px  */

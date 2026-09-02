@@ -1,0 +1,31 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "import", "typescript"],
+  "env": { "browser": true, "es2024": true },
+  "rules": {
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "JSXAttribute[name.name='style'] Literal[value=/#[0-9a-fA-F]{3,8}\\b/]",
+        "message": "Raw hex color in an inline style — use a token via var(--...). See docs/HR_Tools_App/notes/design-system-rules.md"
+      },
+      {
+        "selector": "JSXAttribute[name.name='style'] Literal[value=/\\b\\d+px\\b/]",
+        "message": "Raw px value in an inline style — use a spacing/size token via var(--...)."
+      },
+      {
+        "selector": "Literal[value=/font-family\\s*:\\s*(?!['\\\"]?(?:Archivo|var\\())/i]",
+        "message": "Font not provided by the design system. Available: Archivo, via var(--font-heading) / var(--font-body)."
+      }
+    ],
+    "no-console": "warn",
+    "no-debugger": "error",
+    "eqeqeq": ["error", "always"],
+    "react/jsx-key": "error",
+    "react/no-danger": "error",
+    "react/jsx-no-target-blank": "error",
+    "typescript/no-explicit-any": "warn",
+    "import/no-duplicates": "error"
+  },
+  "ignorePatterns": ["dist", "node_modules", "src/mocks/**"]
+}

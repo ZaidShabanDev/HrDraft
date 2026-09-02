@@ -1,0 +1,152 @@
+/* ============================================================================
+   Base layer — reset, document defaults, type scale.
+   Modernist's foundations, on the HrDraft tokens.
+   ========================================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--text-15);
+  font-weight: 400;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  line-height: 1.12;
+  letter-spacing: var(--tracking-tight);
+}
+
+h1 {
+  font-size: var(--text-42);
+}
+h2 {
+  font-size: var(--text-32);
+}
+h3 {
+  font-size: var(--text-25);
+}
+h4 {
+  font-size: var(--text-20);
+}
+h5 {
+  font-size: var(--text-16);
+}
+
+/* h6 is the system's section label: small, uppercase, tracked out. */
+h6 {
+  font-size: var(--text-13);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+p {
+  margin: 0 0 var(--space-3);
+}
+
+/* Links read as brand-900 and brighten to the accent on hover — the inverse of
+   most systems, and deliberate: the accent is reserved for actions. */
+a {
+  color: var(--brand-900);
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  color: var(--color-accent);
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+figure {
+  margin: 0;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding-left: var(--space-5);
+}
+
+table {
+  border-collapse: collapse;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* Interaction states are themed, never browser defaults. */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: var(--rule-section) solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-accent) 30%, transparent);
+}
+
+/* ── Utilities ─────────────────────────────────────────────────────────── */
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Every content photograph goes through this — the system prints imagery in
+   pure black and white. */
+.grayscale {
+  filter: grayscale(1) contrast(1.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

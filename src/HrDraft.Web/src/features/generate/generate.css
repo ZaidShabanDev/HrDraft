@@ -1,0 +1,354 @@
+/* Screens 02 and 03 — generator form and draft result. */
+
+/* ── Header bar ────────────────────────────────────────────────────────── */
+
+.generate-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  border-bottom: var(--rule-section) solid var(--color-divider);
+  background: var(--color-bg);
+}
+
+.breadcrumb-logo {
+  height: 14px;
+  width: auto;
+  align-self: center;
+  padding-right: var(--space-3);
+  border-right: var(--rule-row) solid var(--color-neutral-300);
+}
+
+.breadcrumb-link,
+.breadcrumb-trail {
+  font-size: var(--text-13);
+  text-decoration: none;
+}
+
+.breadcrumb-current {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: var(--text-15);
+}
+
+.generate-back {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-size: var(--text-18);
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* Phone header is navy chrome with a back arrow, per artboard 2a. */
+@media (max-width: 833.98px) {
+  .generate-header {
+    border-bottom: 0;
+    background: var(--brand-950);
+    color: var(--color-on-dark);
+  }
+
+  .breadcrumb-current {
+    font-size: var(--text-14);
+  }
+}
+
+/* The form column fills its cell so the action row can be pushed to the bottom
+   rather than floating below the last field with empty paper under it. */
+.layout-main > .stack {
+  flex: 1;
+}
+
+.generate-footer {
+  margin-top: auto;
+}
+
+.generate-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.draft-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Anchors the overflow menu to its trigger; the menu positions itself. */
+.draft-menu-anchor {
+  position: relative;
+}
+
+.generate-eta {
+  margin-left: auto;
+  font-size: var(--text-12);
+}
+
+.checkbox-row {
+  display: flex;
+  gap: var(--space-7);
+  flex-wrap: wrap;
+}
+
+/* ── Profile context — rail (desktop) ──────────────────────────────────── */
+
+.profile-rail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-7) var(--space-6);
+  background: var(--color-surface);
+}
+
+.profile-rail-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  font-size: var(--text-13);
+}
+
+.profile-rail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: var(--rule-row) solid var(--color-neutral-300);
+}
+
+.profile-rail-row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* Accent text sits at 700 minimum on this ground — 500 fails contrast at
+   body size. */
+.profile-in-use {
+  color: var(--brand-700);
+  font-size: var(--text-13);
+  white-space: nowrap;
+}
+
+.profile-edit-link,
+.profile-history-link {
+  font-size: var(--text-13);
+}
+
+.profile-rail-runs {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: var(--text-13);
+}
+
+.profile-run {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.profile-run:hover {
+  color: var(--brand-700);
+}
+
+/* ── Profile context — strip (tablet) ──────────────────────────────────── */
+
+.profile-strip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+  padding: 14px;
+  border: var(--rule-section) solid var(--color-divider);
+  background: var(--color-surface);
+}
+
+.profile-strip h6 {
+  margin: 0;
+}
+
+.profile-strip-link {
+  margin-left: auto;
+  font-size: var(--text-13);
+}
+
+/* ── Profile context — collapsed block (phone) ─────────────────────────── */
+
+.profile-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: var(--rule-section) solid var(--color-divider);
+  background: var(--color-surface);
+}
+
+.profile-block-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.profile-block-toggle h6 {
+  margin: 0;
+}
+
+.profile-block-count {
+  font-size: var(--text-11);
+}
+
+/* One caret that rotates, rather than swapping ▾ for ▴ — the rotation shows
+   the direction of the change. */
+.profile-block-caret {
+  display: inline-block;
+  transition: transform var(--duration-fast) var(--ease);
+}
+
+.profile-block-toggle[aria-expanded='true'] .profile-block-caret {
+  transform: rotate(180deg);
+}
+
+/* The reveal itself is a Motion height-to-auto animation — CSS can't
+   interpolate to `auto`. overflow is clipped so the content doesn't spill
+   while the height is mid-flight. */
+.profile-block-reveal {
+  overflow: hidden;
+}
+
+.profile-block-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--text-12);
+}
+
+.profile-block-summary {
+  margin: 0;
+  font-size: var(--text-12);
+}
+
+/* ── Draft result ──────────────────────────────────────────────────────── */
+
+.draft-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: 10px var(--space-6);
+  border-bottom: var(--rule-row) solid var(--color-neutral-300);
+}
+
+.draft-toolbar-note {
+  margin-left: auto;
+  font-size: var(--text-12);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Grows to fill the column under the tab strip, so the 2px divider and the
+   right-hand rail both run the full height of the viewport. max-width still
+   caps the measure — flex-grow here is vertical. */
+.draft-body {
+  flex: 1;
+  max-width: 760px;
+  padding: var(--space-7) var(--space-6);
+}
+
+/* Rendered markdown. Sizes come from the design's draft screen. */
+.draft-markdown h1 {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-26);
+}
+
+.draft-markdown h2 {
+  margin: var(--space-5) 0 var(--space-2);
+  font-size: var(--text-13);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.draft-markdown p,
+.draft-markdown li {
+  font-size: var(--text-14);
+  line-height: 1.7;
+}
+
+.draft-markdown hr {
+  height: var(--rule-section);
+  margin: var(--space-4) 0;
+  border: 0;
+  background: var(--color-divider);
+}
+
+.draft-editor {
+  width: 100%;
+  min-height: 420px;
+  padding: var(--space-4);
+  border: 1px solid var(--color-divider);
+  background: var(--color-surface);
+  font-family: ui-monospace, 'Cascadia Mono', 'Consolas', monospace;
+  font-size: var(--text-13);
+  line-height: 1.7;
+  resize: vertical;
+}
+
+.draft-rail {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: var(--space-6);
+  background: var(--color-surface);
+}
+
+.draft-rail-meta {
+  margin: 0;
+  font-size: var(--text-12);
+}
+
+.draft-next-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.draft-versions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: var(--text-13);
+}
+
+.draft-version-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: var(--rule-row) solid var(--color-neutral-300);
+}
+
+@media (max-width: 833.98px) {
+  .draft-body {
+    padding: 18px;
+  }
+
+  .draft-markdown h1 {
+    font-size: var(--text-20);
+  }
+
+  .draft-markdown p,
+  .draft-markdown li {
+    font-size: var(--text-13);
+    line-height: 1.6;
+  }
+}

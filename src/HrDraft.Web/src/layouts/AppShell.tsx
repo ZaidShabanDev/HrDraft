@@ -3,8 +3,8 @@ import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-do
 import { BrandLogo, Drawer, Menu } from '../components';
 import type { MenuAction } from '../components';
 import { useAppConfig } from '../config/ConfigProvider';
+import { useAuth, useCurrentUser } from '../features/auth/AuthProvider';
 import { useBreakpoint } from '../hooks/useBreakpoint';
-import { mockCurrentUser } from '../mocks/mockData';
 
 const NAV = [
   { to: '/', label: 'Tools', shortLabel: 'Tools' },
@@ -20,15 +20,22 @@ export function AppShell() {
   const [accountOpen, setAccountOpen] = useState(false);
 
   const { branding } = useAppConfig();
-  const user = mockCurrentUser;
+  const { signOut } = useAuth();
+  const user = useCurrentUser();
   const quota = `${user.generationsToday} / ${user.dailyGenerationLimit} generations today`;
+
+  // RequireAuth sends them to /login as soon as the session clears, so this doesn't
+  // navigate itself — doing both would race the guard.
+  const handleSignOut = () => {
+    void signOut();
+  };
 
   const accountActions: MenuAction[] = [
     { id: 'profile', label: 'Company profile', onSelect: () => navigate('/profile') },
     ...(user.role === 'HrAdmin'
       ? [{ id: 'access', label: 'Team access', onSelect: () => navigate('/admin/access') }]
       : []),
-    { id: 'signout', label: 'Sign out', onSelect: () => navigate('/login') },
+    { id: 'signout', label: 'Sign out', onSelect: handleSignOut },
   ];
 
   const isPhone = breakpoint === 'phone';
@@ -116,9 +123,16 @@ export function AppShell() {
             {item.label}
           </NavLink>
         ))}
-        <Link to="/login" className="drawer-link" onClick={() => setDrawerOpen(false)}>
+        <button
+          type="button"
+          className="drawer-link"
+          onClick={() => {
+            setDrawerOpen(false);
+            handleSignOut();
+          }}
+        >
           Sign out
-        </Link>
+        </button>
         <span className="drawer-footer">{quota}</span>
       </Drawer>
 

@@ -1,5 +1,6 @@
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
+import { fetchAppConfig } from '../api/config';
 import { DEFAULT_CONFIG } from './appConfig';
 import type { AppConfig, BrandStep, ThemeConfig } from './appConfig';
 import deploymentConfig from './deployment.json';
@@ -16,34 +17,62 @@ export function useBranding() {
 }
 
 /**
- * Merges the deployment's `deployment.json` over the defaults, one level deep
- * per section, so a deployment only has to state what it changes rather than
- * restating the whole object.
- *
- * Phase 2 replaces the import with a fetch of `GET /api/config`; the merge and
- * everything below it stay as they are.
+ * Merges a partial config over the defaults, one level deep per section, so a
+ * source only has to state what it changes rather than restating the whole object.
  */
-function resolveConfig(): AppConfig {
-  const file = deploymentConfig as DeepPartial<AppConfig>;
+function mergeConfig(source: DeepPartial<AppConfig>): AppConfig {
   return {
     branding: {
       ...DEFAULT_CONFIG.branding,
-      ...file.branding,
-      logo: { ...DEFAULT_CONFIG.branding.logo, ...file.branding?.logo },
-      theme: { ...DEFAULT_CONFIG.branding.theme, ...file.branding?.theme },
+      ...source.branding,
+      logo: { ...DEFAULT_CONFIG.branding.logo, ...source.branding?.logo },
+      theme: { ...DEFAULT_CONFIG.branding.theme, ...source.branding?.theme },
     },
     auth: {
       ...DEFAULT_CONFIG.auth,
-      ...file.auth,
-      entra: { ...DEFAULT_CONFIG.auth.entra, ...file.auth?.entra },
-      ldap: { ...DEFAULT_CONFIG.auth.ldap, ...file.auth?.ldap },
+      ...source.auth,
+      entra: { ...DEFAULT_CONFIG.auth.entra, ...source.auth?.entra },
+      ldap: { ...DEFAULT_CONFIG.auth.ldap, ...source.auth?.ldap },
     },
-    dailyGenerationLimit: file.dailyGenerationLimit ?? DEFAULT_CONFIG.dailyGenerationLimit,
+    dailyGenerationLimit: source.dailyGenerationLimit ?? DEFAULT_CONFIG.dailyGenerationLimit,
   };
 }
 
+/**
+ * Two sources, in this order of authority:
+ *
+ * 1. **`GET /api/config`** — the real one. A deployment configures itself in
+ *    `appsettings.json` and gets a rebranded app without rebuilding the SPA.
+ * 2. **`deployment.json`** — used until that response arrives, and kept if it never
+ *    does. That is what lets `npm run dev` work on its own for front-end work with
+ *    no backend running.
+ *
+ * The local file is applied synchronously so the brand colour is on `:root` before
+ * the first paint. The server's answer replaces it a moment later; identical values
+ * are the normal case, so there is nothing to see.
+ */
 export function ConfigProvider({ children }: { children: ReactNode }) {
-  const config = useMemo(resolveConfig, []);
+  const [config, setConfig] = useState<AppConfig>(() =>
+    mergeConfig(deploymentConfig as DeepPartial<AppConfig>),
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetchAppConfig()
+      .then((fromServer) => {
+        if (!cancelled) setConfig(mergeConfig(fromServer as DeepPartial<AppConfig>));
+      })
+      .catch(() => {
+        // No backend, or it is down. The local file already rendered a complete,
+        // branded app — failing to a blank screen over a config read would be worse
+        // than being one deploy behind on the wording.
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // The theme is applied as custom properties on :root rather than as a class or
   // a styled-components theme. That's the payoff for building on CSS custom

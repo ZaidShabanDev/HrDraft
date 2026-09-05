@@ -39,14 +39,16 @@ company instead of generic AI text.
 
 ## Make it yours
 
-Nothing in the UI hard-codes a company name, logo, colour or sign-in method. Edit
-[`src/HrDraft.Web/src/config/deployment.json`](src/HrDraft.Web/src/config/deployment.json);
-every field is optional.
+Nothing in the UI hard-codes a company name, logo, colour or sign-in method. It all comes
+from the `HrDraft:Branding` section of the API's
+[`appsettings.json`](src/HrDraft.Api/appsettings.json), served to the browser by
+`GET /api/config` — so rebranding a deployment never means rebuilding the front end. Every
+field is optional.
 
 **Colour is one value:**
 
 ```json
-{ "branding": { "theme": { "brand": "#7c3aed" } } }
+{ "HrDraft": { "Branding": { "Theme": { "Brand": "#7c3aed" } } } }
 ```
 
 The full 100–950 ramp derives from it in OKLCH with **lightness pinned per step**, so

@@ -1,20 +1,30 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { BrandLogo, Button, TextField } from '../../components';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { ApiError } from '../../api/client';
+import { Banner, BrandLogo, Button, TextField } from '../../components';
 import { useAppConfig } from '../../config/ConfigProvider';
 import { useIsPhone } from '../../hooks/useBreakpoint';
 import { TOOLS } from '../tools/toolRegistry';
+import { useAuth } from './AuthProvider';
 import './login.css';
 
 export function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const isPhone = useIsPhone();
   const { branding, auth } = useAppConfig();
+  const { status, signIn } = useAuth();
 
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [identifierError, setIdentifierError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [formError, setFormError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  // Where they were headed before the guard sent them here.
+  const from = (location.state as { from?: string } | null)?.from ?? '/';
 
   // LDAP takes a domain username rather than an email, so the field's label and
   // type follow whichever credential path is configured. If both are on, the
@@ -23,18 +33,34 @@ export function LoginPage() {
   const showCredentials = auth.local || auth.ldap.enabled;
   const identifierLabel = usesDirectory ? auth.ldap.domainLabel : 'Work email';
 
-  const submit = (e: FormEvent) => {
+  // Covers both an already-valid session and the moment straight after signing in.
+  if (status === 'authenticated') {
+    return <Navigate to={from} replace />;
+  }
+
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!identifier.trim()) {
-      setError(`${identifierLabel} is required.`);
-      return;
+
+    const trimmed = identifier.trim();
+    setIdentifierError(trimmed ? '' : `${identifierLabel} is required.`);
+    setPasswordError(password ? '' : 'Password is required.');
+    setFormError('');
+    if (!trimmed || !password) return;
+
+    setSubmitting(true);
+    try {
+      await signIn(trimmed, password);
+      navigate(from, { replace: true });
+    } catch (error) {
+      // The server answers every failure the same way on purpose — which one it
+      // was is in the audit log, not in the response. Show it as it came.
+      setFormError(
+        error instanceof ApiError ? error.message : 'Something went wrong signing in.',
+      );
+      setPassword('');
+    } finally {
+      setSubmitting(false);
     }
-    if (!password.trim()) {
-      setError('Password is required.');
-      return;
-    }
-    setError('');
-    navigate('/');
   };
 
   return (
@@ -82,10 +108,27 @@ export function LoginPage() {
             ) : null}
           </div>
 
+          {formError ? (
+            <div role="alert">
+              <Banner kicker="Sign-in failed" tone="danger">
+                {formError}
+              </Banner>
+            </div>
+          ) : null}
+
           {/* Only rendered when a tenant is configured. An SSO button nobody can
               use is worse than no button — so it's hidden, not disabled. */}
           {auth.entra.enabled ? (
-            <Button variant="brand-dark" block onClick={() => navigate('/')}>
+            <Button
+              variant="brand-dark"
+              block
+              disabled={submitting}
+              /* A full page navigation, not a fetch: the identity provider needs
+                 the browser itself to follow the redirect. */
+              onClick={() => {
+                window.location.href = '/api/auth/entra/challenge';
+              }}
+            >
               {auth.entra.buttonLabel}
             </Button>
           ) : null}
@@ -106,6 +149,8 @@ export function LoginPage() {
                 autoComplete="username"
                 placeholder={usesDirectory ? undefined : `name@${branding.emailDomain}`}
                 value={identifier}
+                disabled={submitting}
+                {...(identifierError ? { error: identifierError } : {})}
                 onChange={(e) => setIdentifier(e.target.value)}
               />
 
@@ -114,7 +159,8 @@ export function LoginPage() {
                 type="password"
                 autoComplete="current-password"
                 value={password}
-                {...(error ? { error } : {})}
+                disabled={submitting}
+                {...(passwordError ? { error: passwordError } : {})}
                 onChange={(e) => setPassword(e.target.value)}
               />
 
@@ -134,7 +180,13 @@ export function LoginPage() {
                 ) : null}
               </div>
 
-              <Button type="submit" variant="primary" block>
+              <Button
+                type="submit"
+                variant="primary"
+                block
+                loading={submitting}
+                loadingLabel="Signing in…"
+              >
                 Sign in
               </Button>
             </>
@@ -144,7 +196,8 @@ export function LoginPage() {
               around — but it must say so rather than render an empty panel. */}
           {!auth.entra.enabled && !showCredentials ? (
             <p className="login-misconfigured">
-              No sign-in method is enabled. Set one in <code>config/deployment.json</code>.
+              No sign-in method is enabled. Turn one on under <code>HrDraft:Auth</code> in the
+              API's <code>appsettings.json</code>.
             </p>
           ) : null}
 

@@ -5,6 +5,7 @@ import { ConfigProvider } from './config/ConfigProvider';
 import { DEFAULT_TRANSITION } from './lib/motion';
 import { AppShell } from './layouts/AppShell';
 import { TeamAccessPage } from './features/admin/TeamAccessPage';
+import { AuthProvider, RequireAuth } from './features/auth/AuthProvider';
 import { LoginPage } from './features/auth/LoginPage';
 import { DraftResultPage } from './features/generate/DraftResultPage';
 import { GeneratorPage } from './features/generate/GeneratorPage';
@@ -23,23 +24,33 @@ export function App() {
       {/* Outermost so the theme is on :root before the first paint, and so the
           login screen can read branding before anyone has signed in. */}
       <ConfigProvider>
-        <ToastProvider>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
+        <AuthProvider>
+          <ToastProvider>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
 
-            {/* AppShell is a layout route so the chrome mounts once. */}
-            <Route element={<AppShell />}>
-              <Route index element={<ToolsHomePage />} />
-              <Route path="/tools/:toolKey" element={<GeneratorPage />} />
-              <Route path="/tools/:toolKey/result/:generationId" element={<DraftResultPage />} />
-              <Route path="/history" element={<HistoryPage />} />
-              <Route path="/profile" element={<CompanyProfilePage />} />
-              <Route path="/admin/access" element={<TeamAccessPage />} />
-            </Route>
+              {/* AppShell is a layout route so the chrome mounts once. RequireAuth
+                  wraps it rather than each page, so there is one place a signed-out
+                  visitor can be turned away and one place to change it. */}
+              <Route
+                element={
+                  <RequireAuth>
+                    <AppShell />
+                  </RequireAuth>
+                }
+              >
+                <Route index element={<ToolsHomePage />} />
+                <Route path="/tools/:toolKey" element={<GeneratorPage />} />
+                <Route path="/tools/:toolKey/result/:generationId" element={<DraftResultPage />} />
+                <Route path="/history" element={<HistoryPage />} />
+                <Route path="/profile" element={<CompanyProfilePage />} />
+                <Route path="/admin/access" element={<TeamAccessPage />} />
+              </Route>
 
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </ToastProvider>
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </ToastProvider>
+        </AuthProvider>
       </ConfigProvider>
     </MotionConfig>
   );

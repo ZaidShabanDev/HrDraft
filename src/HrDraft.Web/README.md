@@ -10,13 +10,23 @@ npm run typecheck  # tsc, no emit
 ```
 
 `npm run build` outputs into `../HrDraft.Api/wwwroot` so the SPA and API ship as one site.
-That project doesn't exist yet — use `dev` until Phase 2.
+`npm run dev` proxies `/api` to `https://localhost:7001`, so run the API alongside it.
 
 ## Making it yours
 
-HrDraft is white-label: nothing in the UI hard-codes a company name, logo or colour. Edit
-[`src/config/deployment.json`](src/config/deployment.json) — every field is optional and
-falls back to the defaults in `src/config/appConfig.ts`, so a fresh clone runs as-is.
+HrDraft is white-label: nothing in the UI hard-codes a company name, logo or colour. It
+comes from two places, in this order:
+
+1. **`GET /api/config`**, configured under `HrDraft:Branding` in the API's
+   `appsettings.json`. This is the real one — a deployment rebrands without rebuilding the
+   SPA.
+2. **[`src/config/deployment.json`](src/config/deployment.json)** — used until that response
+   arrives, and kept if it never does, so `npm run dev` works on its own for front-end work
+   with no backend running.
+
+Both are optional and fall back to the defaults in `src/config/appConfig.ts`, so a fresh
+clone runs as-is. The keys below are the JSON ones; `appsettings.json` uses the same shape
+with the sections capitalised.
 
 ### Colour
 

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GridLines, SectionHeading, SegmentedControl, Stack } from '../../components';
+import { useCurrentUser } from '../auth/AuthProvider';
 import { useIsPhone } from '../../hooks/useBreakpoint';
-import { mockCurrentUser } from '../../mocks/mockData';
 import type { ToolCategory } from '../../types/domain';
 import { TOOL_CATEGORIES, toolsByCategory } from './toolRegistry';
 import type { ToolDefinition } from './toolTypes';
@@ -18,7 +18,7 @@ function greeting(): string {
 export function ToolsHomePage() {
   const isPhone = useIsPhone();
   const [category, setCategory] = useState<ToolCategory>('Recruiting');
-  const firstName = mockCurrentUser.displayName.split(' ')[0] ?? '';
+  const firstName = useCurrentUser().displayName.split(' ')[0] ?? '';
 
   return (
     <div className="page-pad">

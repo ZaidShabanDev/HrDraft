@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Business logic and the interfaces that DAL and Service implement.
+       Deliberately has no EF Core reference: repository interfaces here return
+       entities, never IQueryable, so the persistence choice stays in the DAL. -->
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.11" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HrDraft.Model\HrDraft.Model.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Outbound integrations: Anthropic, Microsoft Graph, .docx export, the vendored
+       skill library, password hashing. Implements interfaces declared in Core. -->
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="10.0.11" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.11" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HrDraft.Core\HrDraft.Core.csproj" />
+    <ProjectReference Include="..\HrDraft.Model\HrDraft.Model.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,20 @@
+<Project>
+
+  <!-- Retarget point: if the server can only run .NET 8, this one line is the whole change.
+       See docs/HR_Tools_App/notes/hr-tools-app-spec.md § Swap points. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Product>HrDraft</Product>
+    <Authors>HrDraft contributors</Authors>
+    <Company />
+    <Copyright>Copyright (c) 2026 Zaid Shaban</Copyright>
+    <NeutralLanguage>en</NeutralLanguage>
+  </PropertyGroup>
+
+</Project>

@@ -4,7 +4,8 @@ Open-source, self-hosted web app for a People & Culture team: fill a short form,
 a drafted job description / interview kit / onboarding plan. HR never sees a prompt, a
 model name, or the word "skill".
 
-**Status:** Phase 1 (UI) starting. Docs and architecture settled.
+**Status:** Phase 1 (UI) shipped and published as an open-source repo. Phase 2 (backend) in
+progress — solution, schema and sign-in are in; generation is not.
 
 ---
 
@@ -12,6 +13,9 @@ model name, or the word "skill".
 
 ```
 HR-Tool/
+├── HrDraft.sln
+├── Directory.Build.props                ← TargetFramework lives here; retarget in one line
+├── .config/dotnet-tools.json            ← dotnet-ef, pinned to the package version
 ├── docs/HR_Tools_App/
 │   ├── handoff_HR_Tools_App.md          ← this file
 │   ├── design/HR - Front-End Design-handoff/
@@ -20,9 +24,21 @@ HR-Tool/
 │       ├── hr-tools-app-spec.md         ← the project spec (revised)
 │       ├── database-schema.md           ← every table, column, index, and why
 │       ├── frontend-architecture.md     ← project layout, components, routing, data layer
-│       └── design-system-rules.md       ← tokens, breakpoints, component states
-└── src/                                 ← not created yet
+│       ├── design-system-rules.md       ← tokens, breakpoints, component states
+│       └── backend-setup.md             ← projects, secrets, migrations, auth, runbook
+└── src/
+    ├── HrDraft.Model/                   entities, enums, column-value constants
+    ├── HrDraft.Core/                    interfaces + business logic. No EF Core reference.
+    ├── HrDraft.DAL/                     DbContext, configs, seed, migrations, repositories
+    ├── HrDraft.Service/                 password hashing, mail, later Anthropic + Graph
+    ├── HrDraft.Api/                     the only executable
+    └── HrDraft.Web/                     React 19 + Vite + TS
 ```
+
+**`docs/**/design/` is gitignored**, so the design bundle is not in the public repo — it
+holds the originating company's logo files and branded sketch, which are not this project's
+to publish. Anywhere these notes cite an artboard, the source is local-only. Whoever forks
+this works from `design-system-rules.md`, which states the contract in full.
 
 The design file is a Claude Design export containing **three artboards**. Read all three
 before touching UI code:
@@ -79,7 +95,13 @@ iPad widths. Tablet doesn't narrow the side rails — it *removes* them, turning
 tokens. Check `Usage.CacheReadInputTokens` on a second identical run; if a short `SKILL.md`
 misses the floor, fold it and the company profile under one breakpoint.
 
-**6. The design's UI kit added scope the original spec never had.** Versions tab, history
+**6. Four backend rules that are not guessable from the code.** All four are explained in
+[backend-setup.md](notes/backend-setup.md): migrations are never applied at startup;
+`AddAsNewCurrentAsync` must be called inside `IUnitOfWork.InTransactionAsync`; the audit log
+throws on update or delete; and `dotnet ef` needs `--startup-project` because there is
+deliberately no design-time factory.
+
+**7. The design's UI kit added scope the original spec never had.** Versions tab, history
 search/filters, rename, delete, Team access, chips, typeahead, policy-blocked select
 options. All in v1 (the UI exists, the backend cost is small). Two things were cut:
 "Send to careers site" (external integration) and "Copy share link" (needs a share-token
@@ -123,13 +145,36 @@ None of these block Phase 1.
       company name, logo, colour or sign-in method anywhere in the UI. Config in
       `src/config/`, theming from one brand colour via OKLCH. See
       [frontend-architecture.md](notes/frontend-architecture.md) § White-labelling.
-- [ ] **Rename the folder** `src/Incube.HRTools.Web` → `src/HrDraft.Web` (blocked while the
-      Vite dev server is running; every file inside is already renamed)
-- [ ] Pick a licence — MIT, to match the `hr-skills` prompt content it builds on
-- [ ] **Next: Phase 2.** Solution + five .NET projects, DbContext, entities, first migration
+- [x] **Renamed** `src/Incube.HRTools.Web` → `src/HrDraft.Web`
+- [x] MIT licence, to match the `hr-skills` prompt content it builds on
+- [x] Published: `github.com/ZaidShabanDev/HrDraft`
 
 Phase 1 is done. The UI runs on mock data with the deliberate stubs listed in
-`src/HrDraft.Web/README.md`. Nothing has been type-checked or built by Claude.
+`src/HrDraft.Web/README.md`.
+
+### Phase 2 — backend
+
+- [x] Solution + five .NET projects, reference graph one-way, `Directory.Build.props`
+- [x] Entities, enums and column-value constants in `HrDraft.Model`
+- [x] Repository and service interfaces in `HrDraft.Core`; no EF Core reference
+- [x] `HrDraftDbContext`, one configuration class per entity, seed data for tools /
+      lookups / app settings, repositories, unit of work
+- [x] Cookie auth + local password sign-in: `GET /api/config`, `POST /api/auth/login`,
+      `POST /api/auth/logout`, `GET /api/auth/me`, `/api/health`
+- [x] First-run admin bootstrap, so a fresh deployment has a way in without a seeded
+      default password
+- [ ] **Next: the first migration.** Not run yet — `dotnet ef migrations add` builds, and
+      Claude does not build. Commands are in [backend-setup.md](notes/backend-setup.md).
+- [ ] Company profile read/write, then tools / lookups / teams endpoints
+- [ ] Vendor the `SKILL.md` files into `HrDraft.Service/Content/Skills/`
+- [ ] Anthropic integration — prompt assembly with cache breakpoints, streamed over SSE
+- [ ] Remaining six tools, then history, rate limiting, `.docx` export
+- [ ] Point the SPA off `mocks/mockData.ts` at the real API
+- [ ] Team access admin endpoints (`AuthorizationPolicies.HrAdmin` is already wired)
+
+Nothing has been built or run by Claude. `dotnet restore` was run once, to confirm the
+package versions resolve — they are all on the `10.0.11` patch line, which is what cleared
+the `NU1903` advisory that `10.0.0` pulled in through the EF design-time tooling.
 
 ---
 

@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Entities, enums and DTOs. References nothing: every other project may depend on
+       this one, so a dependency here would leak into all of them. -->
+
+</Project>

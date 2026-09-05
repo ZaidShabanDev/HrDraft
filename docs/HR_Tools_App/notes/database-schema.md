@@ -32,11 +32,11 @@ LookupOptions   Teams   AppSettings        (reference data, no FKs)
 | Column | Type | Notes |
 |---|---|---|
 | `UserId` | `int` IDENTITY | PK |
-| `Email` | `nvarchar(256)` | NOT NULL, unique index |
+| `Email` | `nvarchar(256)` | NOT NULL, unique index. Collation pinned to `SQL_Latin1_General_CP1_CI_AS` |
 | `DisplayName` | `nvarchar(200)` | NOT NULL |
 | `EntraObjectId` | `nvarchar(64)` | NULL. Filtered unique index `WHERE EntraObjectId IS NOT NULL` |
 | `PasswordHash` | `nvarchar(500)` | NULL — local login only; stays NULL for Entra users |
-| `AuthSource` | `tinyint` | `1 = Local`, `2 = EntraId` |
+| `AuthSource` | `tinyint` | `1 = Local`, `2 = EntraId`, `3 = Ldap` |
 | `Role` | `tinyint` | `1 = HrUser`, `2 = HrAdmin` |
 | `IsActive` | `bit` | NOT NULL, default 1 |
 | `DailyGenerationLimit` | `int` | NULL → fall back to `AppSettings` |
@@ -46,6 +46,14 @@ LookupOptions   Teams   AppSettings        (reference data, no FKs)
 **This table is the allowlist.** The spec called for a separate allowlist; a row here with
 `IsActive = 1` is the same thing with one less object to keep in sync. An HR admin
 provisions users through the "Team access" screen in the account menu.
+
+`Email` carries an explicit case-insensitive collation rather than relying on the database
+default. Two reasons: nobody types their own address the same way twice, and comparing on
+`LOWER(Email)` instead would turn every sign-in into an index scan.
+
+`AuthSource` gained `3 = Ldap` during implementation — the front end already ships an LDAP
+sign-in option, and an LDAP user has their password checked by the domain controller, so
+they need a source that is neither Local nor EntraId.
 
 `EntraObjectId` exists from day one even though nothing writes it until Phase 3 — linking
 an existing local user to their Entra identity on first SSO login is then an `UPDATE`
@@ -106,8 +114,11 @@ escape hatch for when HR wants exact wording that doesn't come out of a formatte
 | `DisplayName` | `nvarchar(100)` | NOT NULL |
 | `DisplayNumber` | `varchar(4)` | `01`…`07` as shown on the cards |
 | `Description` | `nvarchar(400)` | the card blurb |
+| `ShortDescription` | `nvarchar(200)` | the trimmed blurb the phone list rows use |
 | `SkillFileNames` | `nvarchar(500)` | `;`-separated relative paths to vendored `SKILL.md` files |
 | `MaxOutputTokens` | `int` | the per-feature cap the spec's checklist requires |
+| `RequiresHumanReview` | `bit` | NOT NULL — drives the "needs a human read" flag |
+| `EstimatedSeconds` | `int` | NOT NULL — the form's "~20 seconds" and the progress bar target |
 | `IsActive` | `bit` | NOT NULL |
 | `SortOrder` | `int` | NOT NULL |
 
@@ -115,6 +126,13 @@ A table rather than a C# enum because three things read from it at runtime — t
 the max-tokens cap, and request validation — and because it lets a misbehaving tool be
 switched off with an `UPDATE` instead of a deploy. `ToolId` values are explicit so
 `Generations.ToolId` stays stable across environments.
+
+**Three columns were added during implementation** — `ShortDescription`,
+`RequiresHumanReview` and `EstimatedSeconds`. All three were living in the front end's tool
+registry, and moving them here sharpens the split the frontend doc describes: the database
+owns everything the home grid *displays*, the registry owns only the form and result
+components. `RequiresHumanReview` in particular has to be data — which documents carry
+legal risk differs by company, and HrDraft is deployed by companies that never talk to us.
 
 ### Seed data
 
@@ -189,7 +207,7 @@ Required by the **Versions** tab in artboard 3a, panel 05.
 | `VersionNumber` | `int` | 1-based, unique per generation |
 | `Markdown` | `nvarchar(max)` | NOT NULL |
 | `IsModelOutput` | `bit` | 1 for version 1, 0 for every human save |
-| `CreatedByUserId` | `int` | FK → `Users` |
+| `CreatedByUserId` | `int` | NULL on version 1 — nobody authored it. FK → `Users` |
 | `CreatedUtc` | `datetime2` | NOT NULL |
 
 Unique index `(GenerationId, VersionNumber)`. The desktop draft screen's *"draft 1 of 1"*
@@ -211,11 +229,23 @@ special case.
 | `Category` | `varchar(50)` | `WorkArrangement`, `SeniorityLevel`, `InterviewType` |
 | `Value` | `varchar(64)` | stable code stored in `InputJson` |
 | `Label` | `nvarchar(200)` | what HR sees |
+| `ShortLabel` | `nvarchar(20)` | NULL — the phone segmented control's `Jr` / `Snr` |
+| `GroupLabel` | `nvarchar(100)` | NULL — the dropdown's group header |
 | `IsEnabled` | `bit` | 0 → renders greyed out, unselectable |
 | `SortOrder` | `int` | NOT NULL |
 
 Unique index `(Category, Value)`. One table for all three lookups — three near-identical
 tables would be worse.
+
+`ShortLabel` and `GroupLabel` were added during implementation. The design's phone
+segmented control shows abbreviations and its dropdown shows a group header; both were
+hard-coded in the mock data, and neither can stay hard-coded once a deployment renames the
+options to its own wording.
+
+Seeded values are deliberately location-neutral — `On-site`, `Hybrid`,
+`Remote — within region`, `Remote — anywhere` — where the design mock used Munich. A
+deployment renames them, and disables the ones its policy forbids, which is what produces
+the design's greyed-out "policy blocked" option without it being a special case in code.
 
 ### `Teams`
 
@@ -226,6 +256,10 @@ Required by the typeahead's *"2 of 14 teams"* footer.
 | `TeamId` | `int` IDENTITY | PK |
 | `Name` | `nvarchar(150)` | NOT NULL, unique |
 | `IsActive` | `bit` | NOT NULL default 1 |
+
+**Not seeded.** Team names belong to whoever deploys the tool, and inventing a plausible
+set would be worse than an empty typeahead — a fresh install would ship with somebody
+else's org chart in it. Populating this needs an admin screen, which is still to build.
 
 ### `AppSettings`
 
